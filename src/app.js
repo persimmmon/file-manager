@@ -13,6 +13,7 @@ import {
   moveFile,
   removeFile,
   info,
+  hashFile,
 } from "./utils.js";
 
 export class App {
@@ -32,6 +33,7 @@ export class App {
       case "cd":
       case "rm":
       case "os":
+      case "hash":
         if (args.length === 1) {
           return true;
         }
@@ -101,6 +103,11 @@ export class App {
 
   async os([command]) {
     info(command);
+  }
+
+  async hash([file]) {
+    const cwd = path.resolve(this._cwd, file);
+    await hashFile(cwd);
   }
 
   async start() {

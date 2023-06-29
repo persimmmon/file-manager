@@ -1,5 +1,7 @@
 import fs, { createReadStream } from "fs";
 import os from "os";
+import { createHash } from "crypto";
+
 import { OPERATION_FAILED } from "./constants.js";
 
 export const isExist = async (cwd) => {
@@ -111,5 +113,21 @@ export const info = (arg) => {
       console.log(os.userInfo().username);
     case "--architecure":
       console.log(process.arch);
+  }
+};
+
+export const hashFile = async (cwd) => {
+  try {
+    await isExist(cwd);
+    fs.readFile(cwd, "utf-8", (err, data) => {
+      if (err) {
+        console.log(OPERATION_FAILED);
+      } else {
+        const hash = createHash("sha256").update(data).digest("hex");
+        console.log(hash);
+      }
+    });
+  } catch (e) {
+    console.log(OPERATION_FAILED);
   }
 };
