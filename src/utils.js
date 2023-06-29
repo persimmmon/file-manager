@@ -1,5 +1,6 @@
 import fs, { createReadStream } from "fs";
-import { OPERATION_FAILED, INVALID_INPUT } from "./constants.js";
+import os from "os";
+import { OPERATION_FAILED } from "./constants.js";
 
 export const isExist = async (cwd) => {
   try {
@@ -89,4 +90,26 @@ export const removeFile = async (cwd) => {
 export const moveFile = async (from, to) => {
   await copyFile(from, to);
   await removeFile(from);
+};
+
+export const info = (arg) => {
+  switch (arg) {
+    case "--eol":
+      console.log(JSON.stringify(os.EOL));
+      break;
+    case "--cpus":
+      console.table(
+        os.cpus().map((el) => ({
+          Model: el.model,
+          Rate: el.speed / 1000 + "GHz",
+        }))
+      );
+      break;
+    case "--homedir":
+      console.log(os.homedir());
+    case "--username":
+      console.log(os.userInfo().username);
+    case "--architecure":
+      console.log(process.arch);
+  }
 };

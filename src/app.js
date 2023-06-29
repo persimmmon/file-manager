@@ -12,6 +12,7 @@ import {
   copyFile,
   moveFile,
   removeFile,
+  info,
 } from "./utils.js";
 
 export class App {
@@ -30,6 +31,7 @@ export class App {
       case "add":
       case "cd":
       case "rm":
+      case "os":
         if (args.length === 1) {
           return true;
         }
@@ -95,6 +97,10 @@ export class App {
 
   async rm([name]) {
     await removeFile(path.resolve(this._cwd, name));
+  }
+
+  async os([command]) {
+    info(command);
   }
 
   async start() {
