@@ -1,6 +1,8 @@
 import { createInterface } from "readline/promises";
 import path from "path";
 
+import { OPERATION_FAILED, INVALID_INPUT } from "./constants.js";
+
 import {
   isExist,
   printList,
@@ -20,9 +22,10 @@ export class App {
   correctInput(command, args) {
     switch (command) {
       case "up":
-      case "cd":
       case "ls":
-        return true;
+        if (args.length === 0) {
+          return true;
+        }
       case "cat":
       case "add":
       case "cd":
@@ -47,7 +50,7 @@ export class App {
       await isExist(cwd);
       this._cwd = cwd;
     } catch (e) {
-      console.log("Operation failed");
+      console.log(OPERATION_FAILED);
     }
   }
 
@@ -57,7 +60,7 @@ export class App {
       await isExist(cwd);
       this._cwd = cwd;
     } catch (e) {
-      console.log("Operation failed");
+      console.log(OPERATION_FAILED);
     }
   }
 
@@ -107,10 +110,10 @@ export class App {
         try {
           await this[command](args);
         } catch (e) {
-          console.log("Operation failed");
+          console.log(OPERATION_FAILED);
         }
       } else {
-        console.log("Invalid input");
+        console.log(INVALID_INPUT);
       }
     }
   }

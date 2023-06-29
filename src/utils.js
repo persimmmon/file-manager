@@ -1,4 +1,5 @@
 import fs, { createReadStream } from "fs";
+import { OPERATION_FAILED, INVALID_INPUT } from "./constants.js";
 
 export const isExist = async (cwd) => {
   try {
@@ -12,7 +13,7 @@ export const isExist = async (cwd) => {
 export const printList = async (cwd) => {
   fs.readdir(cwd, { withFileTypes: true }, (e, files) => {
     if (e) {
-      console.log("Operation failed");
+      console.log(OPERATION_FAILED);
     } else {
       const res = [];
 
@@ -36,24 +37,29 @@ export const catFile = async (cwd) => {
     await isExist(cwd);
     fs.createReadStream(cwd).pipe(process.stdout);
   } catch (e) {
-    console.log("Operation failed");
+    console.log(OPERATION_FAILED);
   }
 };
 
 export const addFile = async (cwd) => {
   fs.writeFile(cwd, "", (err) => {
     if (err) {
-      console.log("Operation failed");
+      console.log(OPERATION_FAILED);
     }
   });
 };
 
 export const renameFile = async (prev, curr) => {
-  fs.rename(prev, curr, (err) => {
-    if (err) {
-      console.log("Operation failed");
-    }
-  });
+  try {
+    await isExist(prev);
+    fs.rename(prev, curr, (err) => {
+      if (err) {
+        console.log(OPERATION_FAILED);
+      }
+    });
+  } catch (e) {
+    console.log(OPERATION_FAILED);
+  }
 };
 
 export const copyFile = async (from, to) => {
@@ -63,16 +69,21 @@ export const copyFile = async (from, to) => {
     const writable = fs.createWriteStream(to);
     readable.pipe(writable);
   } catch (e) {
-    console.log("Operation failed");
+    console.log(OPERATION_FAILED);
   }
 };
 
 export const removeFile = async (cwd) => {
-  fs.unlink(cwd, (err) => {
-    if (err) {
-      console.log("Operation failed");
-    }
-  });
+  try {
+    await isExist(cwd);
+    fs.unlink(cwd, (err) => {
+      if (err) {
+        console.log(OPERATION_FAILED);
+      }
+    });
+  } catch (e) {
+    console.log(OPERATION_FAILED);
+  }
 };
 
 export const moveFile = async (from, to) => {
