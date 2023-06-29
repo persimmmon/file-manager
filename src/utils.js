@@ -1,5 +1,6 @@
 import fs, { createReadStream } from "fs";
 import os from "os";
+import zlib from "zlib";
 import { createHash } from "crypto";
 
 import { OPERATION_FAILED } from "./constants.js";
@@ -127,6 +128,34 @@ export const hashFile = async (cwd) => {
         console.log(hash);
       }
     });
+  } catch (e) {
+    console.log(OPERATION_FAILED);
+  }
+};
+
+export const compressFile = async (from, to) => {
+  try {
+    await isExist(from);
+    const zip = zlib.createGzip();
+
+    const read = fs.createReadStream(from);
+    const write = fs.createWriteStream(to);
+
+    read.pipe(zip).pipe(write);
+  } catch (e) {
+    console.log(OPERATION_FAILED);
+  }
+};
+
+export const decompressFile = async (from, to) => {
+  try {
+    await isExist(from);
+    const unzip = zlib.createUnzip();
+
+    const read = fs.createReadStream(from);
+    const write = fs.createWriteStream(to);
+
+    read.pipe(unzip).pipe(write);
   } catch (e) {
     console.log(OPERATION_FAILED);
   }

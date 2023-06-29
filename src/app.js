@@ -14,6 +14,8 @@ import {
   removeFile,
   info,
   hashFile,
+  compressFile,
+  decompressFile,
 } from "./utils.js";
 
 export class App {
@@ -40,6 +42,8 @@ export class App {
       case "rn":
       case "cp":
       case "mv":
+      case "compress":
+      case "decompress":
         if (args.length === 2) {
           return true;
         }
@@ -108,6 +112,20 @@ export class App {
   async hash([file]) {
     const cwd = path.resolve(this._cwd, file);
     await hashFile(cwd);
+  }
+
+  async compress([from, to]) {
+    await compressFile(
+      path.resolve(this._cwd, from),
+      path.resolve(this._cwd, to)
+    );
+  }
+
+  async decompress([from, to]) {
+    await decompressFile(
+      path.resolve(this._cwd, from),
+      path.resolve(this._cwd, to)
+    );
   }
 
   async start() {
